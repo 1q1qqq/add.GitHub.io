@@ -1,1 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>😀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 90%;
+            width: 100%;
+        }
+        
+        .smiley {
+            font-size: 30vw;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .smiley:hover {
+            transform: scale(1.1);
+        }
+        
+        .smiley:active {
+            transform: scale(0.95);
+        }
+        
+        .instructions {
+            color: white;
+            font-size: 5vw;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: fadeIn 2s ease-in;
+        }
+        
+        .message {
+            color: rgba(255,255,255,0.8);
+            font-size: 4vw;
+            margin-top: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .button {
+            display: inline-block;
+            background: #ff2d55;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 5vw;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 5vw;
+            z-index: 10;
+        }
+        
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (min-width: 768px) {
+            .smiley { font-size: 200px; }
+            .instructions { font-size: 24px; }
+            .message { font-size: 20px; }
+            .button { font-size: 22px; }
+            .counter { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="counter" id="counter">已发送: 0次</div>
+    
+    <div class="container">
+        <div class="instructions">点按笑脸开始有趣互动</div>
+        
+        <div class="smiley" id="smiley">😀</div>
+        
+        <div class="message" id="message">准备发送消息中...</div>
+        
+        <button class="button" id="sendButton">开始发送</button>
+    </div>
 
+    <script>
+        // 获取DOM元素
+        const smiley = document.getElementById('smiley');
+        const message = document.getElementById('message');
+        const sendButton = document.getElementById('sendButton');
+        const counter = document.getElementById('counter');
+        
+        // 初始化变量
+        let sendCount = 0;
+        const totalCount = 10;
+        const messageContent = "爸爸";
+        const targetUserId = "YOUR_WECHAT_ID"; // 替换为你的微信ID
+        
+        // 微笑表情点击事件
+        smiley.addEventListener('click', function() {
+            message.textContent = "点击下方按钮开始发送消息";
+            sendButton.style.display = "inline-block";
+            this.style.animation = "none";
+        });
+        
+        // 发送按钮点击事件
+        sendButton.addEventListener('click', function() {
+            // 更新消息显示
+            message.textContent = `正在向 ${targetUserId} 发送消息...`;
+            
+            // 禁用按钮防止多次点击
+            this.disabled = true;
+            this.textContent = "发送中...";
+            
+            // 模拟发送消息
+            sendMessages();
+        });
+        
+        // 模拟发送消息函数
+        function sendMessages() {
+            let count = 0;
+            const interval = setInterval(() => {
+                if (count < totalCount) {
+                    // 模拟发送消息
+                    sendCount++;
+                    counter.textContent = `已发送: ${sendCount}次`;
+                    
+                    // 创建微信协议URL
+                    const weixinUrl = `weixin://bizmsgmenu?msgmenucontent=${encodeURIComponent(messageContent)}&msgmenuid=960`;
+                    
+                    // 在控制台显示协议（实际应用中会触发微信）
+                    console.log(`发送消息 ${count+1}: ${weixinUrl}`);
+                    
+                    count++;
+                    
+                    // 更新消息显示
+                    message.innerHTML = `正在发送第 ${count} 条消息<br>内容: "${messageContent}"`;
+                    
+                    // 添加动画效果
+                    smiley.style.transform = "scale(1.2)";
+                    setTimeout(() => {
+                        smiley.style.transform = "scale(1)";
+                    }, 200);
+                } else {
+                    // 完成发送
+                    clearInterval(interval);
+                    message.innerHTML = `<strong>已完成${totalCount}次消息发送！</strong>`;
+                    sendButton.textContent = "已完成";
+                    
+                    // 添加庆祝效果
+                    smiley.textContent = "🎉";
+                    smiley.style.animation = "pulse 0.5s infinite";
+                }
+            }, 800); // 每条消息间隔0.8秒
+        }
+        
+        // 初始化页面
+        window.onload = function() {
+            sendButton.style.display = "none";
+            message.textContent = "请点击上方笑脸开始";
+        };
+    </script>
+</body>
+</html>
